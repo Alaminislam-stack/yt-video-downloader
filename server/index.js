@@ -115,7 +115,9 @@ app.post("/api/get", async (req, res, next) => {
       agent,
       hl: "en",
       gl: "US",
-      playerClients: ["ANDROID", "IOS", "MWEB", "TVHTML5_SIMPLYSTRUCTURED"],
+      // Using only the most stable clients for serverless environments
+      playerClients: ["ANDROID", "IOS", "WEB_CREATOR"],
+      disableDefaultClients: true,
       requestOptions: {
         headers: {
           "Accept-Language": "en-US,en;q=0.9",
