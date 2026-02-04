@@ -12,10 +12,20 @@ const fs = require("fs");
 // Configure ytdl-core to stop saving debug "player-script.js" files in the project root
 process.env.YTDL_NO_DEBUG_FILE = "true";
 
-// Load cookies from cookies.json if it exists
+// Load cookies from environment variable OR cookies.json
 let cookies = [];
 const cookiesPath = path.join(__dirname, "cookies.json");
-if (fs.existsSync(cookiesPath)) {
+
+if (process.env.YOUTUBE_COOKIES) {
+  try {
+    cookies = JSON.parse(process.env.YOUTUBE_COOKIES);
+    console.log(
+      "Cookies loaded successfully from YOUTUBE_COOKIES environment variable",
+    );
+  } catch (err) {
+    console.error("Error parsing YOUTUBE_COOKIES env var:", err.message);
+  }
+} else if (fs.existsSync(cookiesPath)) {
   try {
     cookies = JSON.parse(fs.readFileSync(cookiesPath, "utf-8"));
     console.log("Cookies loaded successfully from cookies.json");
