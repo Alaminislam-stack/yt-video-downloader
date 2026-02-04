@@ -113,11 +113,16 @@ app.post("/api/get", async (req, res, next) => {
     console.log(`Calling ytdl.getInfo for URL: ${url}`);
     data = await ytdl.getInfo(url, {
       agent,
+      hl: "en",
+      gl: "US",
+      playerClients: ["ANDROID", "IOS", "MWEB", "TVHTML5_SIMPLYSTRUCTURED"],
       requestOptions: {
         headers: {
           "Accept-Language": "en-US,en;q=0.9",
           "User-Agent":
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+          Referer: "https://www.youtube.com/",
+          Origin: "https://www.youtube.com",
         },
       },
     });
