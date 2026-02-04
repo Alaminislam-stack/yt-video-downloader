@@ -93,6 +93,14 @@ app.get("/api/img", (req, res, next) => {
     .end();
 });
 
+app.get("/api/debug/cookies", (req, res) => {
+  res.json({
+    loaded: cookies.length > 0,
+    count: cookies.length,
+    names: cookies.map((c) => c.name[0] + "..."),
+  });
+});
+
 app.post("/api/get", async (req, res, next) => {
   const { url } = req.body;
   let data;
