@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Replace with your local machine's IP address if testing on a physical device
-const BASE_URL = 'http://192.168.0.103:4522/api';
+const BASE_URL = 'https://yt-video-downloader-server-xi.vercel.app/api';
 
 const api = axios.create({
     baseURL: BASE_URL,
