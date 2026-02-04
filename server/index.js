@@ -99,13 +99,28 @@ app.post("/api/get", async (req, res, next) => {
   }
 
   try {
-    console.log("Calling ytdl.getInfo with Agent...");
-    data = await ytdl.getInfo(url, { agent });
+    console.log(`Calling ytdl.getInfo for URL: ${url}`);
+    data = await ytdl.getInfo(url, {
+      agent,
+      requestOptions: {
+        headers: {
+          "Accept-Language": "en-US,en;q=0.9",
+        },
+      },
+    });
     console.log("ytdl.getInfo success. Data title:", data.videoDetails.title);
   } catch (err) {
     console.error("Error in ytdl.getInfo:", err.message);
+    if (err.message.includes("playable formats")) {
+      return res.status(500).json({
+        message:
+          "YouTube is blocking this request or the video is restricted. Try updated cookies or a different video.",
+        error: "NO_PLAYABLE_FORMATS",
+      });
+    }
     res.status(500).json({
       message: "Could not fetch video info. Make sure the URL is valid.",
+      error: err.message,
     });
     return;
   }
