@@ -20,18 +20,37 @@ if (process.env.YOUTUBE_COOKIES) {
   try {
     cookies = JSON.parse(process.env.YOUTUBE_COOKIES);
     console.log(
-      "Cookies loaded successfully from YOUTUBE_COOKIES environment variable",
+      "SUCCESS: Cookies loaded from YOUTUBE_COOKIES environment variable.",
     );
+    console.log(`Detected ${cookies.length} cookies.`);
   } catch (err) {
-    console.error("Error parsing YOUTUBE_COOKIES env var:", err.message);
+    console.error(
+      "ERROR: Failed to parse YOUTUBE_COOKIES environment variable. Ensure it's valid JSON.",
+    );
+    console.error(err.message);
   }
 } else if (fs.existsSync(cookiesPath)) {
   try {
-    cookies = JSON.parse(fs.readFileSync(cookiesPath, "utf-8"));
-    console.log("Cookies loaded successfully from cookies.json");
+    const fileContent = fs.readFileSync(cookiesPath, "utf-8").trim();
+    if (fileContent && fileContent !== "[]") {
+      cookies = JSON.parse(fileContent);
+      console.log("SUCCESS: Cookies loaded from cookies.json file.");
+      console.log(`Detected ${cookies.length} cookies.`);
+    } else {
+      console.log(
+        "INFO: cookies.json is empty or contains []. No cookies loaded.",
+      );
+    }
   } catch (err) {
-    console.error("Error parsing cookies.json:", err.message);
+    console.error(
+      "ERROR: Failed to parse cookies.json. Ensure it's valid JSON.",
+    );
+    console.error(err.message);
   }
+} else {
+  console.log(
+    "WARNING: No cookies found in environment variable or cookies.json. Bot detection is likely.",
+  );
 }
 
 // Create a ytdl agent for better reliability and avoiding 403 Forbidden errors
