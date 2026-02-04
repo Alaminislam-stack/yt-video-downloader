@@ -23,6 +23,9 @@ if (process.env.YOUTUBE_COOKIES) {
       "SUCCESS: Cookies loaded from YOUTUBE_COOKIES environment variable.",
     );
     console.log(`Detected ${cookies.length} cookies.`);
+    console.log(
+      `Detected ${cookies.length} cookies: ${cookies.map((c) => c.name[0] + "...").join(", ")}`,
+    );
   } catch (err) {
     console.error(
       "ERROR: Failed to parse YOUTUBE_COOKIES environment variable. Ensure it's valid JSON.",
@@ -105,6 +108,8 @@ app.post("/api/get", async (req, res, next) => {
       requestOptions: {
         headers: {
           "Accept-Language": "en-US,en;q=0.9",
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
         },
       },
     });
