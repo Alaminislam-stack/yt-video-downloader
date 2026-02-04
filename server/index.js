@@ -7,12 +7,26 @@ const os = require("os");
 const path = require("path");
 const ytdl = require("@distube/ytdl-core");
 
+const fs = require("fs");
+
 // Configure ytdl-core to stop saving debug "player-script.js" files in the project root
 process.env.YTDL_NO_DEBUG_FILE = "true";
 
+// Load cookies from cookies.json if it exists
+let cookies = [];
+const cookiesPath = path.join(__dirname, "cookies.json");
+if (fs.existsSync(cookiesPath)) {
+  try {
+    cookies = JSON.parse(fs.readFileSync(cookiesPath, "utf-8"));
+    console.log("Cookies loaded successfully from cookies.json");
+  } catch (err) {
+    console.error("Error parsing cookies.json:", err.message);
+  }
+}
+
 // Create a ytdl agent for better reliability and avoiding 403 Forbidden errors
-// You can pass your cookies here to make it even more stable
-const agent = ytdl.createAgent();
+// Passing cookies to the agent helps bypass "Sign in to confirm you're not a bot" errors
+const agent = ytdl.createAgent(cookies);
 
 const app = express();
 const port = process.env.PORT || 4522;
@@ -61,11 +75,9 @@ app.post("/api/get", async (req, res, next) => {
     console.log("ytdl.getInfo success. Data title:", data.videoDetails.title);
   } catch (err) {
     console.error("Error in ytdl.getInfo:", err.message);
-    res
-      .status(500)
-      .json({
-        message: "Could not fetch video info. Make sure the URL is valid.",
-      });
+    res.status(500).json({
+      message: "Could not fetch video info. Make sure the URL is valid.",
+    });
     return;
   }
 
